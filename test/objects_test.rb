@@ -1,8 +1,10 @@
+#--
+
 require 'helper'
 
 
 
-class ObjectsTest < Test::Unit::TestCase
+class ObjectsTest < Test::Unit::TestCase #:nodoc: all
 	def test_decamelize
 		u = Bitly4R::Utility
 
