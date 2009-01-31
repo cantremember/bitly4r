@@ -9,6 +9,7 @@
 #++
 
 #Constructs a SimpleClient with the usual Hash of arguments.
+
 def Bitly4R(ops={})
 	#	general options
 	Bitly4R::SimpleClient.new(ops)

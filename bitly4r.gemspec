@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
 		README.rdoc
 		Rakefile
 	}
-	s.files << Dir.glob('lib/*')
-	s.test_files = Dir.glob('test/*')
+	s.files += Dir.glob('lib/**/*.rb')
+	s.test_files = Dir.glob('test/**/*.rb')
 	# = MANIFEST =
 
 	s.require_paths = %w{lib}

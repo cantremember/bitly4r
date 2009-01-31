@@ -4,9 +4,6 @@
 #* Bitly4R::Client
 #* Bitly4R::SimpleClient
 
-#
-#	API Version 2.0.1
-#
 module Bitly4R
 	#= Client
 	#
