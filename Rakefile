@@ -26,7 +26,9 @@ def spec
 			require 'rubygems/specification'
 			data = File.read('bitly4r.gemspec')
 			spec = nil
-			Thread.new { spec = eval("$SAFE = 3\n#{data}") }.join
+			#	OS X didn't like SAFE = 2
+			#		(eval):25:in `glob': Insecure operation - glob
+			Thread.new { spec = eval("$SAFE = 2\n#{data}") }.join
 			spec
 		end
 end
@@ -58,7 +60,7 @@ end
 
 desc 'Publish website to rubyforge'
 task 'publish:doc' => 'doc/api/index.html' do
-	sh 'scp -rp doc/* rubyforge.org:/var/www/gforge-projects/bitly4r/'
+	sh 'scp -rp doc/* cantremember@rubyforge.org:/var/www/gforge-projects/bitly4r/'
 end
 
 task 'publish:gem' => [package('.gem'), package('.tar.gz')] do |t|
@@ -69,24 +71,17 @@ task 'publish:gem' => [package('.gem'), package('.tar.gz')] do |t|
 end
 
 # Website ============================================================
-# Building docs requires HAML and the hanna gem:
-#   gem install mislav-hanna --source=http://gems.github.com
+# Building docs
 
 task 'doc'     => ['doc:api','doc:site']
 
 desc 'Generate RDoc under doc/api'
 task 'doc:api' => ['doc/api/index.html']
 
-file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc'] do |f|
+file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc','CHANGELOG','LICENSE'] do |f|
 	rb_files = f.prerequisites
 	sh((<<-end).gsub(/\s+/, ' '))
-		hanna --charset utf8 \
-					--fmt html \
-					--inline-source \
-					--line-numbers \
-					--main README.rdoc \
-					--op doc/api \
-					--title 'Bitly4R' \
+		rdoc --line-numbers --inline-source --title Bitly4R --main README.rdoc
 					#{rb_files.join(' ')}
 	end
 end
