@@ -27,7 +27,9 @@ Gem::Specification.new do |s|
 
 	s.require_paths = %w{lib}
 
-	s.add_dependency 'rack', '>= 0.4.0'
+=begin
+	s.add_dependency 'GEM-NAME', '>= GEM-VERSION'
+=end
 
 	s.has_rdoc = true
 	#	only because there ain't no spaces in the title ...

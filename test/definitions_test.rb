@@ -1,6 +1,6 @@
 #--
 
-require 'helper'
+require 'test_helper'
 
 
 
