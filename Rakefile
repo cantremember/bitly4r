@@ -8,7 +8,7 @@ task :default => :test
 
 desc 'Run specs with story style output'
 task :spec do
-	sh 'specrb --specdox -Ilib:test test/*_test.rb'
+	sh 'spec --format specdoc test/* test.rb'
 end
 
 desc 'Run specs with unit test style output'
@@ -115,7 +115,7 @@ CLEAN.include 'doc/index.html'
 file 'bitly4r.gemspec' => FileList['{lib,test}/**','Rakefile'] do |f|
 	# read spec file and split out manifest section
 	spec = File.read(f.name)
-	parts = spec.split("  # = MANIFEST =\n")
+	parts = spec.split(/\s+# = MANIFEST =\n/)
 	fail 'bad spec' if parts.length != 3
 	# determine file list from git ls-files
 	files = `git ls-files`.
