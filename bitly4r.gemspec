@@ -16,14 +16,15 @@ Gem::Specification.new do |s|
 
 	# = MANIFEST =
 	s.files = %w{
-		CHANGELOG
-		LICENSE
-		README.rdoc
-		Rakefile
+        CHANGELOG
+        LICENSE
+        README.rdoc
+        Rakefile
+        #{s.name}.gemspec
 	}
 	s.files += Dir.glob('lib/**/*.rb')
 	s.test_files = Dir.glob('test/**/*.rb')
-	# = MANIFEST =
+    # = MANIFEST =
 
 	s.require_paths = %w{lib}
 
