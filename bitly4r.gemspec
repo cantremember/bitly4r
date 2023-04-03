@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 	s.required_ruby_version = '>= 1.8'
 
 	s.name = 'bitly4r'
-	s.version = '0.1.0'
+	s.version = '0.1.1'
 	s.date = "2009-02-02"
 
 	s.description = "Bitly4R : A Ruby API for the http://bit.ly URL-shortening service"
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
 		LICENSE
 		README.rdoc
 		Rakefile
+        bitly4r.gemspec
 	}
 	s.files += Dir.glob('lib/**/*.rb')
 	s.test_files = Dir.glob('test/**/*.rb')
