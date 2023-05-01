@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class Bitly4R::Client - Bitly4R</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+  var index_rel_prefix = "../";
+</script>
+
+<script src="../js/navigation.js" defer></script>
+<script src="../js/search.js" defer></script>
+<script src="../js/search_index.js" defer></script>
+<script src="../js/searcher.js" defer></script>
+<script src="../js/darkfish.js" defer></script>
+
+<link href="../css/fonts.css" rel="stylesheet">
+<link href="../css/rdoc.css" rel="stylesheet">
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../table_of_contents.html#pages">Pages</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+<div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  <p class="link"><a href="../Object.html">Object</a>
+</div>
+
+    
+    
+    
+<!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    <li ><a href="#method-c-new">::new</a>
+    <li ><a href="#method-i-expand">#expand</a>
+    <li ><a href="#method-i-info">#info</a>
+    <li ><a href="#method-i-shorten">#shorten</a>
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-Bitly4R::Client">
+  <h1 id="class-Bitly4R::Client" class="class">
+    class Bitly4R::Client
+  </h1>
+
+  <section class="description">
+    
+<h1 id="class-Bitly4R::Client-label-Client"><a href="Client.html"><code>Client</code></a><span><a href="#class-Bitly4R::Client-label-Client">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p>A client object for accessing the bit.ly API.</p>
+<ul><li>
+<p>This <a href="Client.html"><code>Client</code></a> uses version 4.0.0 of the API (eg. ‘/v4/*’).</p>
+</li><li>
+<p>It supports Access Token credentials.</p>
+</li></ul>
+
+<p>See the API documentation:</p>
+<ul><li>
+<p><a href="https://dev.bitly.com/docs">dev.bitly.com/docs</a>/</p>
+</li></ul>
+
+  </section>
+
+  <section id="5Buntitled-5D" class="documentation-section">
+
+
+
+    <section class="attribute-method-details" class="method-section">
+      <header>
+        <h3>Attributes</h3>
+      </header>
+
+      <div id="attribute-i-token" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">token</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        <p>The Access Token credential provided at construction.</p>
+        </div>
+      </div>
+    </section>
+
+
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+      <div id="method-c-new" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">(ops={})</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>Constructs a new client.</p>
+
+<p>Any tuples provided in the optional Hash are injected into instance variables.</p>
+
+<p>You must provide an Access Token (<code>token</code>).</p>
+
+          <div class="method-source-code" id="new-source">
+            <pre>   <span class="ruby-comment"># File lib/bitly4r/client.rb</span>
+<span class="line-num">26</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">ops</span>={})
+<span class="line-num">27</span>         <span class="ruby-comment">#    for the readers</span>
+<span class="line-num">28</span>         <span class="ruby-comment">#    not necessary, but polite</span>
+<span class="line-num">29</span>         <span class="ruby-identifier">ops</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
+<span class="line-num">30</span>                 <span class="ruby-identifier">instance_variable_set</span> <span class="ruby-node">&quot;@#{k}&quot;</span>.<span class="ruby-identifier">to_sym</span>, <span class="ruby-identifier">v</span>
+<span class="line-num">31</span>         <span class="ruby-keyword">end</span>
+<span class="line-num">32</span> 
+<span class="line-num">33</span>         <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;you must provide an Access Token&quot;</span>) <span class="ruby-keyword">unless</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">token</span>
+<span class="line-num">34</span> <span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+    </section>
+
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+      <div id="method-i-expand" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">expand</span><span
+            class="method-args">(url)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>Invokes the API’s <strong>expand</strong> method. It reverses a shorten; the original full URL is re-hydrated.</p>
+
+<p><a href="https://dev.bitly.com/api-reference/#expandBitlink">dev.bitly.com/api-reference/#expandBitlink</a></p>
+
+<p>For <em>url</em>, you can provide a previously-shortened URL from the bit.ly service.</p>
+
+<p>The URL must provide both a domain (hostname) and a Bitlink ID (path). A minimum-viable URL would be something along the lines of ‘bit.ly/3ADCPDo’.</p>
+
+<p>A <a href="Response.html"><code>Response</code></a> is returned. <a href="Response.html#method-i-to_s"><code>Response.to_s</code></a> will return the <code>long_url</code> value.</p>
+
+          <div class="method-source-code" id="expand-source">
+            <pre>   <span class="ruby-comment"># File lib/bitly4r/client.rb</span>
+<span class="line-num">72</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">expand</span>(<span class="ruby-identifier">url</span>)
+<span class="line-num">73</span>             <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">url</span>
+<span class="line-num">74</span> <span class="ruby-identifier">uri</span> = <span class="ruby-constant">URI</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">url</span>)
+<span class="line-num">75</span> <span class="ruby-identifier">bitlink</span> = <span class="ruby-node">&quot;#{uri.host}#{uri.path}&quot;</span>
+<span class="line-num">76</span> 
+<span class="line-num">77</span>             <span class="ruby-keyword">return</span> <span class="ruby-identifier">execute_post</span>(<span class="ruby-string">&#39;expand&#39;</span>, <span class="ruby-value">:long_url</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">params</span><span class="ruby-operator">|</span>
+<span class="line-num">78</span>                     <span class="ruby-identifier">params</span>[<span class="ruby-value">:bitlink_id</span>] = <span class="ruby-identifier">bitlink</span>
+<span class="line-num">79</span>             <span class="ruby-keyword">end</span>
+<span class="line-num">80</span>     <span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-info" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">info</span><span
+            class="method-args">(url)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>Invokes the API’s <strong>info</strong> method. Information about the shortened URL is returned by the service.</p>
+
+<p><a href="https://dev.bitly.com/api-reference/#getBitlink">dev.bitly.com/api-reference/#getBitlink</a></p>
+
+<p>For <em>url</em>, you can provide a previously-shortened URL from the bit.ly service.</p>
+
+<p>The URL must provide both a domain (hostname) and a Bitlink ID (path). A minimum-viable URL would be something along the lines of ‘bit.ly/3ADCPDo’.</p>
+
+<p>A <a href="Response.html"><code>Response</code></a> is returned. <a href="Response.html#method-i-to_s"><code>Response.to_s</code></a> will return the <code>long_url</code> value.</p>
+
+<p>There is plenty of other data in the response besides the original full URL. Feel free to access the <a href="Response.html#attribute-i-body"><code>Response.body</code></a> and use <a href="Response.html#method-i-method_missing"><code>Response.method_missing</code></a> to pull out specific element values.</p>
+
+          <div class="method-source-code" id="info-source">
+            <pre>    <span class="ruby-comment"># File lib/bitly4r/client.rb</span>
+<span class="line-num"> 97</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">info</span>(<span class="ruby-identifier">url</span>)
+<span class="line-num"> 98</span>             <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">url</span>
+<span class="line-num"> 99</span> <span class="ruby-identifier">uri</span> = <span class="ruby-constant">URI</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">url</span>)
+<span class="line-num">100</span> <span class="ruby-identifier">bitlink</span> = <span class="ruby-node">&quot;#{uri.host}#{uri.path}&quot;</span>
+<span class="line-num">101</span> 
+<span class="line-num">102</span> <span class="ruby-identifier">command</span> = <span class="ruby-node">&quot;bitlinks/#{bitlink}&quot;</span>
+<span class="line-num">103</span>             <span class="ruby-keyword">return</span> <span class="ruby-identifier">execute_get</span>(<span class="ruby-identifier">command</span>, <span class="ruby-value">:long_url</span>)
+<span class="line-num">104</span>     <span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-shorten" class="method-detail ">
+        <div class="method-heading">
+          <span class="method-name">shorten</span><span
+            class="method-args">(long_url, ops={})</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+
+        <div class="method-description">
+          <p>Invokes the API’s <strong>shorten</strong> method. That’s pretty much what makes bit.ly a valuable service.</p>
+
+<p><a href="https://dev.bitly.com/api-reference/#createBitlink">dev.bitly.com/api-reference/#createBitlink</a></p>
+
+<p>A <a href="Response.html"><code>Response</code></a> is returned. <a href="Response.html#method-i-to_s"><code>Response.to_s</code></a> will return the <code>link</code> value.</p>
+
+<p>You can take the shortened URL and re-expand it.</p>
+
+<p><em>ops</em> allows for additional API parameters &lt;ul&gt;</p>
+
+<pre>&lt;li&gt;&lt;tt&gt;group_guid&lt;/tt&gt;&lt;/li&gt;
+&lt;li&gt;&lt;tt&gt;domain&lt;/tt&gt;&lt;/li&gt;</pre>
+
+<p>&lt;/ul&gt;</p>
+
+          <div class="method-source-code" id="shorten-source">
+            <pre>   <span class="ruby-comment"># File lib/bitly4r/client.rb</span>
+<span class="line-num">52</span>     <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shorten</span>(<span class="ruby-identifier">long_url</span>, <span class="ruby-identifier">ops</span>={})
+<span class="line-num">53</span>             <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">long_url</span>
+<span class="line-num">54</span> <span class="ruby-keyword">return</span> <span class="ruby-identifier">execute_post</span>(<span class="ruby-string">&#39;shorten&#39;</span>, <span class="ruby-value">:link</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">params</span><span class="ruby-operator">|</span>
+<span class="line-num">55</span>     <span class="ruby-identifier">params</span>[<span class="ruby-value">:long_url</span>] = <span class="ruby-identifier">long_url</span>
+<span class="line-num">56</span>     <span class="ruby-identifier">params</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">ops</span>)
+<span class="line-num">57</span> <span class="ruby-keyword">end</span>
+<span class="line-num">58</span>     <span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+    </section>
+
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.4.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
