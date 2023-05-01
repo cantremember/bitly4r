@@ -5,46 +5,28 @@ require 'test_helper'
 
 
 class DefinitionsTest < Test::Unit::TestCase #:nodoc: all
-	def test_keyed
+	def test_with_token
 		#	shorten ...
-		client = Bitly4R(:login => LOGIN, :api_key => API_KEY)
-		short = client.shorten(LONG_URL)
+		short = Bitly4R(:token => TOKEN).shorten(LONG_URL)
 		assert short && (! short.empty?)
+        assert (String === short)
 
-		#	... and expand
-		assert_equal LONG_URL, Bitly4R.Keyed(LOGIN, API_KEY).expand(short)
+		#	... and expand (with another Definition)
+        long = Bitly4R.Token(TOKEN).expand(short)
+        assert (String === long)
+		assert_equal LONG_URL, long
 	end
 
-	def test_authed
-		unless PASSWORD
-			puts %Q{
-NOTE:
-	the text login (#{LOGIN}) did not publish a password
-	cannot be tested without that private information
-			}.strip
-			return
-		end
-
-		#	http://code.google.com/p/bitly-api/wiki/ApiDocumentation
-		#		sure, the documentation claims there's HTTP Auth support
-		#		but i don't see it yet
-		short = nil
-		assert_raises Bitly4R::Error do
-			#	shorten ...
-			client = Bitly4R(:login => LOGIN, :password => API_KEY)
-			short = client.shorten(LONG_URL)
-			assert short && (! short.empty?)
-		end
-
+	def test_without_token
 		#	alright, let's use the API key
-		client = Bitly4R(:login => LOGIN, :api_key => API_KEY)
-		short = client.shorten(LONG_URL)
-		assert short && (! short.empty?)
+		client = Bitly4R(:token => 'INVALID')
 
-		#	same deal.  *sigh*
+        assert_raises Bitly4R::Error do
+    		client.shorten(LONG_URL)
+        end
+
 		assert_raises Bitly4R::Error do
-			#	... and expand
-			assert_equal LONG_URL, Bitly4R.Authed(LOGIN, PASSWORD).expand(short)
+            Bitly4R.Token('INVALID').shorten(LONG_URL)
 		end
 	end
 end

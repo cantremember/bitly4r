@@ -2,6 +2,7 @@
 
 A Ruby API for the http://bit.ly URL-shortening service
 
+
 == SimpleClient
 
 This example uses a simpler construction and invocation technique.
@@ -10,16 +11,18 @@ For when you just need the URLs, and not any additional data.
    require 'rubygems'
    require 'bitly4r'
 
-   login, api_key = 'bitlyapidemo', 'R_0da49e0a9118ff35f52f629d2d71bf07'
+   access_token = ENV['TOKEN']
    long_url = 'http://rubyforge.org/'
 
-   client = Bitly4R.Keyed(login, api_key)
+   client = Bitly4R.Token(access_token)
 
    # shorten
    short_url = client.shorten(long_url)
+   puts "short_url = #{short_url}"
 
    # re-expand
    raise 'what the?' unless (long_url == client.expand(short_url))
+
 
 == Client
 
@@ -29,36 +32,39 @@ The URLs are returned by the <tt>to_s</tt> methods of the Response objects, and 
    require 'rubygems'
    require 'bitly4r'
 
-   login, api_key = 'bitlyapidemo', 'R_0da49e0a9118ff35f52f629d2d71bf07'
+   access_token = ENV['TOKEN']
    long_url = 'http://rubyforge.org/'
 
-   client = Bitly4R::Client.new(:login => login, :api_key => api_key)
+   client = Bitly4R::Client.new(:token => access_token)
 
    # shorten
    short_url = client.shorten(long_url).to_s
+   puts "short_url = #{short_url}"
 
    # re-expand
    raise 'aww, cmon!' unless (long_url == client.expand(short_url).to_s)
 
+
 == Support
+
+This Client uses version 4.0.0 of the API (eg. '/v4/*').
+It supports Access Token credentials.
 
 This gem supports the following API commands:
 
-* shorten
-* expand
-* info
-* stats
-* errors
+* `POST /v4/shorten`
+* `POST /v4/expand`
+* `GET /v4/bitlinks/:bitlink`
 
 For more information, see the API documentation:
 
-* http://code.google.com/p/bitly-api/wiki/ApiDocumentation
+* http://cantremember.github.io/bitly4r/
 
 == Contributing
 
 === Issue Tracking and Feature Requests
 
-* http://bitly4r.rubyforge.org
+* https://github.com/cantremember/bitly4r
 
 == Community
 

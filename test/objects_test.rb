@@ -81,21 +81,20 @@ class ObjectsTest < Test::Unit::TestCase #:nodoc: all
 		response = Bitly4R::Response.new('string', :bogus)
 		assert_equal 'string', response.body
 		assert_nil response.to_s
+        assert_nil response.to_sym
 
 		#	simple
-		response = Bitly4R::Response.new('<a>value</a>', :b)
-		assert_equal 'value', response.a
-		assert_nil response.to_s
+		response = Bitly4R::Response.new('{"key":"value"}', :key)
+		assert_equal 'value', response.key
+        assert_nil response.another_key
+		assert_equal 'value', response.to_s
+        assert_equal :value, response.to_sym
 
 		#	camelization
-		response = Bitly4R::Response.new('<uD>down</uD><dU>up</dU>', :d_u)
+		response = Bitly4R::Response.new('{"uD":"down","dU":"up"}', :d_u)
 		assert_equal 'down', response.uD
 		assert_equal 'down', response.u_d
 		assert_equal 'up', response.dU
 		assert_equal 'up', response.to_s
-
-		#	CDATA, plus to_sym
-		response = Bitly4R::Response.new('<a><b>b</b><cData><![CDATA[data]]></cData><c>c</c></a>', :c_data)
-		assert_equal :data, response.to_sym
 	end
 end

@@ -1,3 +1,11 @@
+= 0.2.0
+
+    * upgrade to bit.ly API version 4.0.0
+    * upgrade to Ruby 3
+    * remove login + password + api_key, replace with Authentication Token (token)
+    * the 'stats' and 'errors' methods are obsolete
+    * a `TOKEN` environment variable must be passed to the Test Suite
+
 = 0.1.1
 
     * the build never included 'bitly4r.gemspec'

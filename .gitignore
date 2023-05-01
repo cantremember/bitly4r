@@ -1,2 +1,4 @@
-doc/
+doc/**/*
+!doc/template.haml
+
 dist/

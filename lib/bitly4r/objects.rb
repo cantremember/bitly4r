@@ -68,10 +68,10 @@ module Bitly4R
 		#Constructs a bit.ly API response wrapper.
 		#
 		#<i>response</i> can be:
-		#* a String, which becomes the body
-		#* a Net::HTTPResponse, in which case its body is extracted
+		#* a JSON String, which becomes the body
+		#* a Net::HTTPResponse, in which case its body is extracted and expected to be in JSON format
 		#
-		#<i>to_s_sym</i> is optional, and it references the element which will become the to_s value of this Response.
+		#<i>to_s_sym</i> is optional, and it references the property which will become the `#to_s` value of this Response.
 		#It can be either camel-case or underscored.
 		#See method_missing.
 		def initialize(response, to_s_sym=nil)
@@ -80,18 +80,19 @@ module Bitly4R
 			@to_s_sym = to_s_sym
 		end
 
-		#Provides access the other text elements of the response via camel-case or underscored names.
+		#Provides access to the other properties of the response body via camel-case or underscored names.
 		#For example, <tt>longUrl</tt> and <tt>long_url</tt> are equivalent.
-		#If no such element exists, you'll get nil.
+		#If no such property exists, you'll get nil.
 		def method_missing(sym, *args)
-			sym = Utility::camelize(sym.to_s)
-			match = (self.body || '').match(%r{<#{sym}>(.*)</#{sym}>})
+            begin
+                json = JSON.parse(@body || '{}')
+            rescue JSON::ParserError => e
+                return nil
+            end
 
-			unless match
-				nil
-			else
-				match[1].gsub(/^<!\[CDATA\[(.*)\]\]>$/, '\1')
-			end
+            # their 'v4/*' JSON convention is snake_case
+            sym = Utility::decamelize(sym.to_s)
+			return json[sym]
 		end
 
 		#Provides the 'likely' value from the response.
@@ -102,7 +103,9 @@ module Bitly4R
 
 		#Provides the 'likely' value from the response, as a symbol.
 		def to_sym
-			@to_s_sym  ? self.to_s.to_sym  : super
+            return super unless @to_s_sym
+            value = self.to_s
+            return value.nil? ? value : value.to_sym
 		end
 	end
 

@@ -8,7 +8,9 @@
 #--
 
 #	external
-%w{ net/http cgi }.each {|lib| require lib }
+require 'net/http'
+require 'cgi'
+require 'json'
 
 #	internal, and in the proper sequence
 %w{

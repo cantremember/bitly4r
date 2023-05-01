@@ -6,15 +6,10 @@ task :default => :test
 
 # SPECS ===============================================================
 
-desc 'Run specs with story style output'
-task :spec do
-	sh 'specrb --specdox -Ilib:test test/*_test.rb'
-end
-
 desc 'Run specs with unit test style output'
 task :test => FileList['test/*_test.rb'] do |t|
-	suite = t.prerequisites.map{|f| "-r#{f.chomp('.rb')}"}.join(' ')
-	sh "ruby -Ilib:test #{suite} -e ''", :verbose => false
+	suite = t.prerequisites.join(' ')
+	sh "ruby -Ilib:test #{suite}", :verbose => false
 end
 
 # PACKAGING ============================================================
@@ -56,24 +51,40 @@ file package('.tar.gz') => %w[dist/] + spec.files do |f|
 	sh "git archive --format=tar HEAD | gzip > #{f.name}"
 end
 
-# Rubyforge Release / Publish Tasks ==================================
+# Release / Publish Tasks ==================================
 
 desc 'Publish website to rubyforge'
-task 'publish:doc' => 'doc/api/index.html' do
-	sh 'scp -rp doc/* cantremember@rubyforge.org:/var/www/gforge-projects/bitly4r/'
-end
 
-task 'publish:gem' => [package('.gem'), package('.tar.gz')] do |t|
+# https://guides.rubygems.org/publishing/#publishing-to-rubygemsorg
+task 'publish:gem' => [package('.gem')] do |t|
 	sh <<-end
-		rubyforge add_release bitly4r bitly4r #{spec.version} #{package('.gem')} &&
-		rubyforge add_file    bitly4r bitly4r #{spec.version} #{package('.tar.gz')}
+		gem push #{package('.gem')}
 	end
 end
 
 # Website ============================================================
 # Building docs
 
-task 'doc'     => ['doc:api','doc:site']
+=begin
+NOTE:  i honestly don't know how `rake doc` is working
+  but it does!
+
+Manual process for publish to Github Pages
+  http://cantremember.github.io/bitly4r/
+
+```bash
+# no outstanding Git changes, then ...
+rake doc
+
+git checkout gh-pages
+cp -r doc/* .
+git add .
+
+# commit & push
+```
+=end
+
+task 'doc'     => ['doc:api']
 
 desc 'Generate RDoc under doc/api'
 task 'doc:api' => ['doc/api/index.html']
@@ -82,40 +93,17 @@ file 'doc/api/index.html' => FileList['lib/**/*.rb','README.rdoc','CHANGELOG','L
 	rb_files = f.prerequisites
 	sh((<<-end).gsub(/\s+/, ' '))
 		rdoc --line-numbers --inline-source --title Bitly4R --main README.rdoc
-					#{rb_files.join(' ')}
+			#{rb_files.join(' ')}
 	end
 end
 CLEAN.include 'doc/api'
-
-def rdoc_to_html(file_name)
-	require 'rdoc/markup/to_html'
-	rdoc = RDoc::Markup::ToHtml.new
-	rdoc.convert(File.read(file_name))
-end
-
-def haml(locals={})
-	require 'haml'
-	template = File.read('doc/template.haml')
-	haml = Haml::Engine.new(template, :format => :html4, :attr_wrapper => '"')
-	haml.render(Object.new, locals)
-end
-
-desc 'Build website HTML and stuff'
-task 'doc:site' => ['doc/index.html']
-
-file 'doc/index.html' => %w[README.rdoc doc/template.haml] do |file|
-	File.open(file.name, 'w') do |file|
-		file << haml(:title => 'Bitly4R', :content => rdoc_to_html('README.rdoc'))
-	end
-end
-CLEAN.include 'doc/index.html'
 
 # Gemspec Helpers ====================================================
 
 file 'bitly4r.gemspec' => FileList['{lib,test}/**','Rakefile'] do |f|
 	# read spec file and split out manifest section
 	spec = File.read(f.name)
-	parts = spec.split("  # = MANIFEST =\n")
+	parts = spec.split("# = MANIFEST =\n")
 	fail 'bad spec' if parts.length != 3
 	# determine file list from git ls-files
 	files = `git ls-files`.
@@ -127,7 +115,7 @@ file 'bitly4r.gemspec' => FileList['{lib,test}/**','Rakefile'] do |f|
 		join("\n")
 	# piece file back together and write...
 	parts[1] = "  s.files = %w[\n#{files}\n  ]\n"
-	spec = parts.join("  # = MANIFEST =\n")
+	spec = parts.join("# = MANIFEST =\n")
 	File.open(f.name, 'w') { |io| io.write(spec) }
 	puts "updated #{f.name}"
 end

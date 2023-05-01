@@ -9,33 +9,26 @@ $LOAD_PATH.unshift File.dirname(File.dirname(__FILE__)) + "/../lib"
 
 #	if we're lucky...
 begin
-	require 'ruby-debug'
+	require 'debug'
 rescue Exception
 end
 
 
 
 class Test::Unit::TestCase #:nodoc: all
-
 	#	trailing slash makes a difference!  they normalize!
 	LONG_URL = 'http://rubyforge.org/'
 
-	#	credentials from
-	#		http://code.google.com/p/bitly-api/wiki/ApiDocumentation
-	#		no password provided
-	LOGIN = 'bitlyapidemo'
-	API_KEY = 'R_0da49e0a9118ff35f52f629d2d71bf07'
-	PASSWORD = nil
+	#	an Access Token credential is required
+	TOKEN = ENV['TOKEN']
+    raise Exception.new('You must provide an Access Token (TOKEN) from the environment') if (TOKEN.nil? || TOKEN.empty?)
 
 
+    def new_client
+        Bitly4R::Client.new(:token => TOKEN)
+    end
 
-	def new_client
-		Bitly4R::Client.new(:login => LOGIN, :api_key => API_KEY)
-	end
-
-	def assert_is_response_ok(response)
-		assert_equal '0', response.error_code
-		assert_equal '', response.error_message
-		assert_equal 'OK', response.status_code
+	def new_simple_client
+		Bitly4R.Token(TOKEN)
 	end
 end

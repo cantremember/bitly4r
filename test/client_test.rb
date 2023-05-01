@@ -9,122 +9,83 @@ class ClientTest < Test::Unit::TestCase #:nodoc: all
 		any = 'any'
 
 		assert_raises Bitly4R::Error do
-			#	no login
+			#	no token
 			Bitly4R::Client.new
 		end
 
-		assert_raises Bitly4R::Error do
-			#	needs API key or password
-			Bitly4R::Client.new(:login => any)
-		end
-
-		Bitly4R::Client.new(:login => any, :api_key => any)
-		Bitly4R::Client.new(:login => any, :password => any)
+		Bitly4R::Client.new(:token => any)
 	end
 
 	def test_shorten
-		#	shorten
+		#	shorten with a full Client
 		client = new_client
 		response = client.shorten LONG_URL
 
-		assert_is_response_ok response
+        assert (Bitly4R::Response === response)
 
 		#	we get back what we provided
-		assert_equal LONG_URL, response.node_key
+		assert_equal LONG_URL, response.long_url
 
 		#	no assumption as to the value, just how they inter-relate
-		hash = response.user_hash
-		assert hash && (! hash.empty?)
-		short = response.short_url
-		assert short =~ Regexp.compile(hash + '$')
+		id = response.id
+		assert id && (! id.empty?)
+		link = response.link
+		assert_equal "https://#{id}", link
+        assert_equal response.to_s, link
+
+        #   shorten with a SimpleClient
+        simple_client = new_simple_client
+        simple_response = simple_client.shorten LONG_URL
+        assert (String === simple_response)
+        assert_equal link, simple_response
 	end
 
 	def test_expand
-		#	shorten ...
+		#	shorten with a full Client
 		client = new_client
-
 		response = client.shorten(LONG_URL)
-		assert_is_response_ok response
 
-		hash = response.user_hash
+		id = response.id
 		short = response.to_s
 
 		#	... and re-expand
-		#	again, we don't have to know anything
+        #   no assumption as to the value, just how they inter-relate
 		response = client.expand(short)
-		assert_is_response_ok response
 
 		assert_equal LONG_URL, response.to_s
+        assert_equal LONG_URL, response.long_url
 
-		#	note sure what purpose it serves
-		#	but it will contain a hash-wrapped element
-		assert ! response.__send__(hash.to_sym).empty?
-
-		#	... and re-expand
-		#	again, we don't have to know anything
-		response = client.expand(hash, :hash)
-		assert_is_response_ok response
-
-		assert_equal LONG_URL, response.to_s
-
-		#	again...
-		assert ! response.__send__(hash.to_sym).empty?
+        #   expand with a SimpleClient
+        simple_client = new_simple_client
+        simple_response = simple_client.expand short
+        assert (String === simple_response)
+        assert_equal LONG_URL, simple_response
 	end
 
 	def test_info
-		#	shorten ...
+        #   shorten with a full Client
 		client = new_client
-
 		response = client.shorten(LONG_URL)
-		assert_is_response_ok response
 
-		hash = response.user_hash
 		short = response.to_s
 
-		#	short url, with no key limit
+		#	now, its info ...
 		response = client.info(short)
-		assert_is_response_ok response
 
-		assert_equal LONG_URL, response.long_url
+        assert_equal LONG_URL, response.to_s
+        assert_equal LONG_URL, response.long_url
 
-		#	hash, key limit
-		response = client.info(hash, :hash, :keys => [:long_url, :html_title])
-		assert_is_response_ok response
+        #   a few other accessable properties
+        #   no assumption as to the value, just how they inter-relate
+        assert_equal "https://#{response.id}", response.link
+        assert_equal false, response.archived
 
-		#	well, we're getting non-included keys back
-		#	then again, the demo doesn't constrain the keys either
-		#		http://code.google.com/p/bitly-api/wiki/ApiDocumentation
-		###assert response.thumbnail.empty?
-		###assert ! response.html_title.empty?
-		assert_equal LONG_URL, response.to_s
-	end
-
-	def test_stats
-		#	shorten ...
-		client = new_client
-
-		response = client.shorten(LONG_URL)
-		assert_is_response_ok response
-
-		hash = response.user_hash
-		short = response.to_s
-
-		{ :hash => hash, :short_url => short }.each do |param_type, param|
-			response = client.info(param, param_type)
-			assert_is_response_ok response
-
-			#	we could choose anything
-			assert_equal LONG_URL, response.to_s
-		end
-	end
-
-	def test_errors
-		#	errors ...
-		client = new_client
-
-		response = client.errors
-		assert ! response.results.empty?
-		assert ! response.error_code.empty?
-		assert ! response.status_code.empty?
+        #   info with a SimpleClient
+        #   which for this method is not "simple"; it provides a full Response
+        simple_client = new_simple_client
+        simple_response = simple_client.info short
+        assert (Bitly4R::Response === response)
+        assert_equal LONG_URL, simple_response.long_url
+        assert_equal false, response.archived
 	end
 end
